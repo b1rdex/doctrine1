@@ -167,4 +167,30 @@ class Doctrine_AuditLog extends Doctrine_Record_Generator
 
         return isset($result[0]['max_version']) ? $result[0]['max_version']:0;
     }
+
+    public function getVersionToDate(Doctrine_Record $record, $date, $hydrationMode = Doctrine_Core::HYDRATE_ARRAY)
+    {
+        $className = $this->_options['className'];
+        $select = $className . '.updated_at';
+        $method    = 'execute';
+
+        $q = Doctrine_Core::getTable($className)
+            ->createQuery()
+            ->orderBy($select . ' DESC')
+            ->limit(1);
+
+        $values = array();
+        foreach ((array) $this->_options['table']->getIdentifier() as $id) {
+            $conditions[] = $className . '.' . $id . ' = ?';
+            $values[] = $record->get($id);
+        }
+
+        $where = implode(' AND ', $conditions) . ' AND ' . $className . '.updated_at <= ?';
+
+        $values[] = $date;
+
+        $q->where($where);
+
+        return $q->$method($values, $hydrationMode);
+    }
 }

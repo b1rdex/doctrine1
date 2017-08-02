@@ -153,7 +153,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
                                   'wildcards'           => array('%', '_'),
                                   'varchar_max_length'  => 255,
                                   'sql_file_delimiter'  => ";\n",
-                                  'max_identifier_length' => 64,
+                                  'max_identifier_length' => 127,
                                   );
 
     /**
